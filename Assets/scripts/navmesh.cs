@@ -5,12 +5,14 @@ using UnityEngine.AI;
 
 public class navmesh : MonoBehaviour
 {
-    public Transform objetivo;
+    private GameObject objetivo;
 
     void Start()
     {
+        objetivo = GameObject.FindGameObjectWithTag("Finish");
+
         NavMeshAgent agente = GetComponent<NavMeshAgent>();
-        agente.destination = objetivo.position;
+        agente.destination = objetivo.transform.position;
     }
 
     void Update()

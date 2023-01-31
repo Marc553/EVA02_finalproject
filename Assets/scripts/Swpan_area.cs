@@ -6,21 +6,34 @@ using Unity.AI.Navigation;
 
 public class Swpan_area : MonoBehaviour
 {
-    public NavMeshSurface[] surfaces;
-    
+    public NavMeshSurface surfaces;
+    public GameObject mapa;
+    public GameObject mapaPosition;
+    public GameObject enemy;
+    public GameObject enemyPosition;
+
 
     // Use this for initialization
     void Update()
     {
-         if(Input.GetKeyDown(KeyCode.A))
-        {
-            for (int i = 0; i < surfaces.Length; i++)
-                {
-                surfaces[i].BuildNavMesh();
+    }
 
-                }
-            
-        }
+    public void SpawnManager()
+    {
+        
+        Instantiate(mapa, mapaPosition.transform.position, mapaPosition.transform.rotation);
+    }public void SpawnEnemy()
+    {
+        Instantiate(enemy, enemyPosition.transform.position, enemyPosition.transform.rotation);
+    }
+
+    private void OnMouseDown()
+    {
+            SpawnManager();
+            surfaces.BuildNavMesh();
+            SpawnEnemy();
+        
+        gameObject.SetActive(false);
     }
 
 }
