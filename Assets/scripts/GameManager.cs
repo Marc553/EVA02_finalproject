@@ -7,10 +7,25 @@ public class GameManager : MonoBehaviour
     public GameObject tower;
     public GameObject towerSelector;
     public spawn_torret spawn_TorretScript;
+    public Vector3 spawnTourretPos;
 
+    
+
+    public static GameManager sharedInstance;
+    private void Awake()
+    {
+        if(sharedInstance == null)
+        {
+            sharedInstance = this;
+        }
+        else 
+        {
+            Destroy(gameObject);
+
+        }
+    }
     void Start()
     {
-        spawn_TorretScript = FindObjectOfType<spawn_torret>();
     }
 
     // Update is called once per frame
@@ -21,7 +36,7 @@ public class GameManager : MonoBehaviour
 
     public void SpawnTower()
     {
-        Instantiate(tower, spawn_TorretScript.pos.position, spawn_TorretScript.pos.transform.rotation);
+        Instantiate(tower, spawnTourretPos, Quaternion.identity);
     }
 
     public void Exit()

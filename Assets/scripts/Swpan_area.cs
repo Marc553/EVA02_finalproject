@@ -12,6 +12,10 @@ public class Swpan_area : MonoBehaviour
     public GameObject enemy;
     public GameObject enemyPosition;
 
+    public bool left;
+    public bool right;
+    public bool inway;
+    public bool outway;
 
     // Use this for initialization
     void Update()

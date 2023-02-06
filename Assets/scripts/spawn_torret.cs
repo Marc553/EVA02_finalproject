@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class spawn_torret : MonoBehaviour
 {
-    public GameObject towerSelector;
-    public Transform pos;
+    public bool withTourret = false;
+
+    
    
     void Start()
     {
+        
     }
 
     // Update is called once per frame
@@ -20,7 +22,24 @@ public class spawn_torret : MonoBehaviour
 
     private void OnMouseDown()
     {
-            pos = gameObject.transform;
-            towerSelector.SetActive(true);
+            GameManager.sharedInstance.spawnTourretPos = gameObject.transform.position;
+        if(withTourret == false)
+        {
+            GameManager.sharedInstance.towerSelector.SetActive(true);
+        }
+        
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "tourret")
+        {
+            withTourret = true;
+
+            Debug.Log("TOCO");
+
+        }
+    }
+
+
 }
