@@ -7,37 +7,57 @@ using Unity.AI.Navigation;
 public class Swpan_area : MonoBehaviour
 {
     public NavMeshSurface surfaces;
-    public GameObject mapa;
-    public GameObject mapaPosition;
-    public GameObject enemy;
-    public GameObject enemyPosition;
+    public GameObject[] mapSpawn;
 
-    public bool left;
-    public bool right;
-    public bool inway;
-    public bool outway;
+    public GameObject button;
+
+
+    public Dictionary<int, int[]> platformCombination = new Dictionary<int, int[]>()
+    {
+        {0, new int[] {2,3} },
+        {1, new int[] {2} } ,
+        {2, new int[] {0,1, 2} } ,
+        {3, new int[] {0} }
+    };
+
+    public int oldPlataform = 0;
+
 
     // Use this for initialization
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            surfaces.BuildNavMesh();
+        }
     }
 
-    public void SpawnManager()
+    public void SpawnPlataform()
     {
-        
-        Instantiate(mapa, mapaPosition.transform.position, mapaPosition.transform.rotation);
-    }public void SpawnEnemy()
-    {
-        Instantiate(enemy, enemyPosition.transform.position, enemyPosition.transform.rotation);
+        int randoPlataform = Random.Range(0, platformCombination[oldPlataform].Length);
+
+        int newPlatform = platformCombination[oldPlataform][randoPlataform];
+
+         Instantiate(mapSpawn[newPlatform], GameManager.sharedInstance.mapaPosition - Vector3.forward * 30, GameManager.sharedInstance.transform.rotation);
+
+        GameManager.sharedInstance.mapaPosition = GameManager.sharedInstance.mapaPosition - Vector3.forward * 30;
+
+        oldPlataform = newPlatform;
     }
+
+    public void MoveButton()
+    {
+        GameManager.sharedInstance.buttonPosition = GameManager.sharedInstance.buttonPosition - Vector3.forward * 30;
+        transform.position = GameManager.sharedInstance.buttonPosition;
+    }
+    
 
     private void OnMouseDown()
-    {
-            SpawnManager();
+    { 
+            MoveButton();
+            SpawnPlataform();
             surfaces.BuildNavMesh();
-            SpawnEnemy();
         
-        gameObject.SetActive(false);
     }
 
 }
