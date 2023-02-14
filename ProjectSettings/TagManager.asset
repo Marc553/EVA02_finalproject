@@ -6,6 +6,7 @@ TagManager:
   tags:
   - tourret_set
   - tourret
+  - spawnPoint
   layers:
   - Default
   - TransparentFX
