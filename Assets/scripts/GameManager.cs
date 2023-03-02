@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.AI.Navigation;
+using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject tower;
+    public GameObject[] tower;
     public GameObject towerSelector;
     public spawn_torret spawn_TorretScript;
     public Vector3 spawnTourretPos;
@@ -39,6 +43,9 @@ public class GameManager : MonoBehaviour
 
     public bool onSpawn = false;
 
+    public TextMeshProUGUI coinsText;
+    public int coins = 0;
+
     public static GameManager sharedInstance;
     private void Awake()
     {
@@ -56,6 +63,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoint");
+
+        coinsText.text = $"Coins : {coins}";
     }
 
     private void Update()
@@ -84,9 +93,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SpawnTower()
+    public void SpawnTower1()
     {
-        Instantiate(tower, spawnTourretPos, Quaternion.identity);
+        Instantiate(tower[0], spawnTourretPos, Quaternion.identity);
+    }
+    public void SpawnTower2()
+    {
+        Instantiate(tower[1], spawnTourretPos, Quaternion.identity);
+    }
+    public void SpawnTower3()
+    {
+        Instantiate(tower[2], spawnTourretPos, Quaternion.identity);
     }
     public void Exit()
     {
@@ -115,7 +132,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < totalenemies; i++)
         {
             SpawnEnemy();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
         }
     }
 
@@ -128,5 +145,11 @@ public class GameManager : MonoBehaviour
         Instantiate(enemies[randomEnemy], spawnPoints[radomSpawn].transform.position, transform.rotation);
     }
 
+    public void UpdateCoins(int coin)
+    {
+        coins += coin;
 
+        coinsText.text = $"Coins : {coins}";
+
+    }
 }
