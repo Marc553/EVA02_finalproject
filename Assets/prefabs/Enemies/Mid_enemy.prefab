@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 20
-  enemyCoins: 5
+  enemyCoins: 10
 --- !u!1 &6082305899803471200
 GameObject:
   m_ObjectHideFlags: 0

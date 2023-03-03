@@ -44,7 +44,10 @@ public class GameManager : MonoBehaviour
     public bool onSpawn = false;
 
     public TextMeshProUGUI coinsText;
-    public int coins = 0;
+    public int coins = 30;
+
+    public Button[] turretButton;
+    public int[] prices;
 
     public static GameManager sharedInstance;
     private void Awake()
@@ -75,22 +78,19 @@ public class GameManager : MonoBehaviour
         {
             button.SetActive(true);
         }
-        else
-        {
-            button.SetActive(false);
-        }
        
         if(onSpawn == true)
         {
+            button.SetActive(false);
             enemiesPerWave += 3;
             StartCoroutine(SpawnEnemyWave(enemiesPerWave));
             onSpawn = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            button.SetActive(true);
-        }
+        CanBuy(0);
+        CanBuy(1);
+        CanBuy(2);
+
     }
 
     public void SpawnTower1()
@@ -151,5 +151,23 @@ public class GameManager : MonoBehaviour
 
         coinsText.text = $"Coins : {coins}";
 
+    }
+
+    public void BuyTurret(int price)
+    {
+        coins -= price;
+        coinsText.text = $"Coins : {coins}";
+    }
+
+    void CanBuy(int button)
+    {
+        if (coins < prices[button])
+        {
+            turretButton[button].interactable = false;
+        }
+        else
+        {
+            turretButton[button].interactable = true;
+        }
     }
 }

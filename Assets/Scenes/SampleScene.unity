@@ -666,6 +666,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 339974282}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: BuyTurret
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 10
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &585007274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1338,6 +1350,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 339974282}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: BuyTurret
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1492201623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1510,6 +1534,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 339974282}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: BuyTurret
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 15
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1844,6 +1880,11 @@ PrefabInstance:
       objectReference: {fileID: 858538554}
     - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
         type: 3}
+      propertyPath: prices.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
       propertyPath: enemies.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -1870,6 +1911,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6721793485779229769, guid: 948e8d64461b625479e56173d92c8eaf,
         type: 3}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: prices.Array.data[0]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: prices.Array.data[1]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: prices.Array.data[2]
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
         type: 3}
       propertyPath: enemies.Array.data[0]
@@ -1912,6 +1968,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4210831753524027315, guid: 2dd808eecacbc3643bafe09a97850a28,
         type: 3}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: turretButton.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: turretButton.Array.data[0]
+      value: 
+      objectReference: {fileID: 1492201622}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: turretButton.Array.data[1]
+      value: 
+      objectReference: {fileID: 585007273}
+    - target: {fileID: 6995305062746496454, guid: bf49e595669c5e0489299b511a7c315f,
+        type: 3}
+      propertyPath: turretButton.Array.data[2]
+      value: 
+      objectReference: {fileID: 1641475993}
     - target: {fileID: 6995305062746496458, guid: bf49e595669c5e0489299b511a7c315f,
         type: 3}
       propertyPath: m_Name
