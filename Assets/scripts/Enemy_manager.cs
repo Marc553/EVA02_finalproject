@@ -5,19 +5,23 @@ using UnityEngine.AI;
 
 public class Enemy_manager : MonoBehaviour
 {
-    private GameObject objetivo;
+    private GameObject target;
 
     public int health;
 
     public int enemyCoins;
 
+    public float speed = 16.55f;
+
+    public NavMeshAgent agente;
     void Start()
     {
-        objetivo = GameObject.FindGameObjectWithTag("Finish");
+        target = GameObject.FindGameObjectWithTag("Finish");
 
-        NavMeshAgent agente = GetComponent<NavMeshAgent>();
-        agente.destination = objetivo.transform.position;
-
+         agente = GetComponent<NavMeshAgent>();
+       agente.destination = target.transform.position;
+        agente.speed = speed;
+        
     }
 
     private void Update()

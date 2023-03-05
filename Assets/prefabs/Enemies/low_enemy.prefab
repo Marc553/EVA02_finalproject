@@ -94,11 +94,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9218120790021955544}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.4586636, y: 1, z: 1.4722271}
+  m_Center: {x: 0.000000059604645, y: 0, z: -0.0059589148}
 --- !u!195 &9218120790021955546
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -133,5 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df3ccb6c2b1d3b347a727842267854a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  enemyCoins: 5
+  health: 18
+  enemyCoins: 6
+  speed: 12.6
+  agente: {fileID: 0}

@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     public int enemiesLeft;
-    private int enemiesPerWave = 2;
+    private int enemiesPerWave = 5;
     public GameObject[] enemies;
 
     public bool onSpawn = false;
@@ -48,6 +48,10 @@ public class GameManager : MonoBehaviour
 
     public Button[] turretButton;
     public int[] prices;
+
+    public TextMeshProUGUI towerHealthText;
+    public int towerHealth;
+
 
     public static GameManager sharedInstance;
     private void Awake()
@@ -72,7 +76,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        enemiesLeft = FindObjectsOfType<navmesh>().Length;
+        towerHealthText.text = $"Tower Life : {towerHealth}";
+
+            enemiesLeft = FindObjectsOfType<Enemy_manager>().Length;
        
         if (enemiesLeft <= 0)
         {
@@ -82,7 +88,7 @@ public class GameManager : MonoBehaviour
         if(onSpawn == true)
         {
             button.SetActive(false);
-            enemiesPerWave += 3;
+            enemiesPerWave += 5;
             StartCoroutine(SpawnEnemyWave(enemiesPerWave));
             onSpawn = false;
         }
@@ -168,6 +174,14 @@ public class GameManager : MonoBehaviour
         else
         {
             turretButton[button].interactable = true;
+        }
+    }
+    
+    public void GameOver(bool gameOver = false)
+    {
+        if(gameOver == true)
+        {
+            Time.timeScale = 0;
         }
     }
 }

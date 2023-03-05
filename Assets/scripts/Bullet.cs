@@ -12,6 +12,8 @@ public class Bullet : MonoBehaviour
 
     public int damage;
 
+    public GameObject impactEffect; 
+
     public void Seek(GameObject _target)
     {
         target = _target;
@@ -39,6 +41,8 @@ public class Bullet : MonoBehaviour
 
         void HitTarget()
         {
+            GameObject effectIns = (GameObject)Instantiate(impactEffect, transform.position, transform.rotation);
+            Destroy(effectIns, 2f);
             target.GetComponent<Enemy_manager>().health -= damage;
             Destroy(gameObject);
         }
