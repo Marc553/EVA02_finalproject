@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using UnityEditor;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     public Vector3 mapaPosition = Vector3.zero;
     public Vector3 buttonPosition = new Vector3(0, 15, 0);
+
+    public bool uIOn;
 
     #region Platforms
     public NavMeshSurface surfaces;
@@ -40,6 +45,7 @@ public class GameManager : MonoBehaviour
     public int enemiesLeft;
     private int enemiesPerWave = 5;
     public GameObject[] enemies;
+    public int enemyWave = 0;
 
     public bool onSpawn = false;
 
@@ -52,10 +58,32 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI towerHealthText;
     public int towerHealth;
 
+    public GameObject postProcesing;
+
+    public float vignetteAnimValue;
+
+    private Volume volume;
+    private Vignette vignetteVolume;
+
+    public GameObject dollyCartCam;
+
+    public GameObject pivotCamera;
+
+    public GameObject dollyTrackCam;
+
+    private CinemachineSmoothPath smsp;
+
+    public Vector3 pivotPosition = new Vector3(0, 0, -15);
+
+    public float cameraSpeed = 0.04f;
+
+    public GameObject pause;
+
 
     public static GameManager sharedInstance;
     private void Awake()
     {
+        Time.timeScale = 1;
         if(sharedInstance == null)
         {
             sharedInstance = this;
@@ -69,9 +97,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        smsp = dollyTrackCam.GetComponent<CinemachineSmoothPath>();
+
         spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoint");
 
         coinsText.text = $"Coins : {coins}";
+
+        volume = FindObjectOfType<Volume>();
+
     }
 
     private void Update()
@@ -79,14 +112,32 @@ public class GameManager : MonoBehaviour
         towerHealthText.text = $"Tower Life : {towerHealth}";
 
             enemiesLeft = FindObjectsOfType<Enemy_manager>().Length;
-       
-        if (enemiesLeft <= 0)
+       if(enemyWave <= 5)
         {
+            if (enemiesLeft <= 0)
+            {
             button.SetActive(true);
+            }
+
+            //win
         }
-       
-        if(onSpawn == true)
+        
+       if(Input.GetKey(KeyCode.D))
+       {
+            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position += cameraSpeed;
+            smsp.m_Resolution = 5;
+        }
+
+        if(Input.GetKey(KeyCode.A))
+       {
+            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position -= cameraSpeed;
+            smsp.m_Resolution = 6;
+
+        }
+
+        if (onSpawn == true)
         {
+            enemyWave++;
             button.SetActive(false);
             enemiesPerWave += 5;
             StartCoroutine(SpawnEnemyWave(enemiesPerWave));
@@ -96,6 +147,13 @@ public class GameManager : MonoBehaviour
         CanBuy(0);
         CanBuy(1);
         CanBuy(2);
+
+        VignetteAnim(vignetteAnimValue);
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Pause();
+        }
 
     }
 
@@ -113,6 +171,7 @@ public class GameManager : MonoBehaviour
     }
     public void Exit()
     {
+        uIOn = false;
         towerSelector.SetActive(false);
     }
     public void SpawnPlataform()
@@ -131,6 +190,10 @@ public class GameManager : MonoBehaviour
     {
         buttonPosition = buttonPosition - Vector3.forward * 30;
         button.transform.position = buttonPosition;
+        pivotCamera.transform.position += pivotPosition;
+        smsp.m_Waypoints[2].position += new Vector3 (0,0,-25);
+        smsp.m_Waypoints[1].position += new Vector3 (0,0,-25); 
+        
     }
 
     private IEnumerator SpawnEnemyWave(int totalenemies)
@@ -149,6 +212,7 @@ public class GameManager : MonoBehaviour
         int radomSpawn = Random.Range(0, spawnPoints.Length);
 
         Instantiate(enemies[randomEnemy], spawnPoints[radomSpawn].transform.position, transform.rotation);
+
     }
 
     public void UpdateCoins(int coin)
@@ -184,4 +248,30 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0;
         }
     }
+
+    public void VignetteAnim(float value)
+    {
+        if (volume.profile.TryGet<Vignette>(out vignetteVolume))
+        {
+            vignetteVolume.intensity.value = value;
+        }
+    }
+
+    public void GoToScene(string sceneName)
+    {
+        //Change to the scene with "Scene Name"
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0;
+        pause.SetActive(true);
+    }
+    public void Unpause()
+    {
+        Time.timeScale = 1;
+        pause.SetActive(false);
+    }
+
 }

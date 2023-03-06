@@ -6,13 +6,16 @@ public class spawn_torret : MonoBehaviour
 {
     public bool withTourret = false;
 
-
     private void OnMouseDown()
     {
-        GameManager.sharedInstance.spawnTourretPos = gameObject.transform.position;
-        if (withTourret == false)
+        if(GameManager.sharedInstance.uIOn == false)
         {
+            if (withTourret == false)
+            {
+                GameManager.sharedInstance.spawnTourretPos = gameObject.transform.position;
+                GameManager.sharedInstance.uIOn = true;
             GameManager.sharedInstance.towerSelector.SetActive(true);
+            }
         }
     }
 
@@ -21,8 +24,6 @@ public class spawn_torret : MonoBehaviour
         if (other.tag == "tourret")
         {
             withTourret = true;
-
-            Debug.Log("TOCO");
         }
     }
 }

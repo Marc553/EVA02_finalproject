@@ -7,19 +7,12 @@ public class Spaw_enemies : MonoBehaviour
     public GameObject[] enemies;
     public GameObject[] spawnPoints;
 
-
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         if(GameManager.sharedInstance.onSpawn == true)
         {
             SpawnEnemy();
         }
-
     }
 
     public void SpawnEnemy()
