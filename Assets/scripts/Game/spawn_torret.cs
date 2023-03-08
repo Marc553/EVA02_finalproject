@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class spawn_torret : MonoBehaviour
 {
+    #region Variables
+    //Bool to check if there is a tourret
     public bool withTourret = false;
+    #endregion
 
-    private void OnMouseDown()
+    #region Action Functions
+    private void OnMouseUp()
     {
-        if(GameManager.sharedInstance.uIOn == false)
+        if(GameManager.sharedInstance.uIOn == false)//If the UI of the panel tourret is off
         {
-            if (withTourret == false)
+            if (withTourret == false)//If there isn't a tourret, will spawn  
             {
-                GameManager.sharedInstance.spawnTourretPos = gameObject.transform.position;
+                GameManager.sharedInstance.spawnTourretPos = gameObject.transform.position;//Save the actual fool clicked
+                
+                //Will set on the panel tourret
                 GameManager.sharedInstance.uIOn = true;
             GameManager.sharedInstance.towerSelector.SetActive(true);
             }
         }
     }
 
+    //Check if there is a tourret 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "tourret")
@@ -26,4 +33,5 @@ public class spawn_torret : MonoBehaviour
             withTourret = true;
         }
     }
+    #endregion 
 }

@@ -14,14 +14,21 @@ public class Enemy_manager : MonoBehaviour
     public float speed = 16.55f;
 
     public NavMeshAgent agente;
+
+    private AudioSource enemyManager;
+    public AudioClip walk;
+
     void Start()
     {
+        enemyManager = GetComponent<AudioSource>();
         target = GameObject.FindGameObjectWithTag("Finish");
 
          agente = GetComponent<NavMeshAgent>();
        agente.destination = target.transform.position;
         agente.speed = speed;
         
+        enemyManager.volume = DataPersistence.SharedInfo.effectsGameDP;
+        enemyManager.PlayOneShot(walk);
     }
 
     private void Update()

@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    // Start is called before the first frame update
-
+    #region Vairables
     private GameObject target;
 
     public float speed = 70f;
@@ -13,13 +12,26 @@ public class Bullet : MonoBehaviour
     public int damage;
 
     public GameObject impactEffect; 
+    public GameObject impactEffect2; 
 
     public void Seek(GameObject _target)
     {
         target = _target;
     }
 
-    // Update is called once per frame
+    private AudioSource bulletManager;
+    public AudioClip fire;
+    public AudioClip enemy;
+    #endregion  
+
+    private void Start()
+    {
+        bulletManager = GetComponent<AudioSource>();
+        bulletManager.volume = DataPersistence.SharedInfo.effectsGameDP;
+        bulletManager.PlayOneShot(fire);
+
+
+    }
     void Update()
     {
         if(target == null)
@@ -41,10 +53,13 @@ public class Bullet : MonoBehaviour
 
         void HitTarget()
         {
-            GameObject effectIns = (GameObject)Instantiate(impactEffect, transform.position, transform.rotation);
-            Destroy(effectIns, 2f);
+            bulletManager.PlayOneShot(enemy);
+            GameObject effect1Ins = (GameObject)Instantiate(impactEffect, transform.position, transform.rotation);
+            GameObject effect2Ins = (GameObject)Instantiate(impactEffect2, transform.position, transform.rotation);
+            Destroy(effect1Ins, 1f);
+            Destroy(effect2Ins, 1f);
             target.GetComponent<Enemy_manager>().health -= damage;
-            Destroy(gameObject);
+                Destroy(gameObject);
         }
 
 

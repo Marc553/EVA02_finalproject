@@ -13,78 +13,104 @@ using Cinemachine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] tower;
-    public GameObject towerSelector;
-    public spawn_torret spawn_TorretScript;
-    public Vector3 spawnTourretPos;
-
-    public Vector3 mapaPosition = Vector3.zero;
-    public Vector3 buttonPosition = new Vector3(0, 15, 0);
-
-    public bool uIOn;
-
-    #region Platforms
-    public NavMeshSurface surfaces;
-    public GameObject[] mapSpawn;
-
-    public GameObject button;
-
-    public GameObject[] spawnPoints;
-  
-    public Dictionary<int, int[]> platformCombination = new Dictionary<int, int[]>()
-    {
-        {0, new int[] {2,3} },
-        {1, new int[] {2} } ,
-        {2, new int[] {0,1, 2} } ,
-        {3, new int[] {0} }
-    };
-
-    public int oldPlataform = 0;
+    #region Variables
+    #region Tower Spawn
+    public GameObject[] tower;//Tourrets array
+    public GameObject towerSelector;//Panel with the tourret selector 
+    public spawn_torret spawn_TourretScript; 
+    public Vector3 spawnTourretPos;//Save the position of the new tourret
     #endregion
 
+    public Vector3 mapaPosition = Vector3.zero;//Start vector to calcule the new position
+    public Vector3 buttonPosition = new Vector3(0, 15, 0);//Vector to plus 
+
+    public bool uIOn;//checker of the IU
+
+    #region Platform
+    public NavMeshSurface surfaces;//Creation of the Navmesh
+    public GameObject[] mapSpawn;//Platforms array
+
+    public GameObject button;//Button to generate the new Navmesh terrain
+
+    public GameObject[] spawnPoints;//Spawn points to enemies 
+  
+    public Dictionary<int, int[]> platformCombination = new Dictionary<int, int[]>()//Check which platform is compatible with the other
+    {
+        {0, new int[] {2,3} },//The platform 0 is compatible with 2 and 3
+        {1, new int[] {2} } ,//The platform 1 is compatible with 2
+        {2, new int[] {0,1, 2} } ,//The platform 2 is compatible with 0, 1 and 2
+        {3, new int[] {0} }//The platform 3 is compatible with 0
+    };
+
+    public int oldPlataform = 0;//Save old platform to use dictionary
+    #endregion
+
+    #region Enemy Spawn
     public int enemiesLeft;
-    private int enemiesPerWave = 5;
-    public GameObject[] enemies;
-    public int enemyWave = 0;
+    private int enemiesPerWave = 5;//Number of enemies per wave
+    public GameObject[] enemies;//Enemies array
+    public int enemyWave = 0;//Count the number of waves of enemies that have passed
+    public bool onSpawn = false;//Check to start the enemy spawn
+    #endregion
 
-    public bool onSpawn = false;
+    #region UI Sistem
+    public TextMeshProUGUI coinsText;//Shows the coins number
+    public int coins = 30;//Coins
 
-    public TextMeshProUGUI coinsText;
-    public int coins = 30;
+    public Button[] turretButton;//Array with all tourrets
+    public int[] prices;//The prices 
 
-    public Button[] turretButton;
-    public int[] prices;
-
-    public TextMeshProUGUI towerHealthText;
+    public TextMeshProUGUI towerHealthText;//Shows the tower health
     public int towerHealth;
 
+    public GameObject win;
+    public GameObject lose;
+
+    public float waitTime = 20;
+
+    #endregion
+
+    #region Postprocesing
     public GameObject postProcesing;
 
-    public float vignetteAnimValue;
+    public float vignetteAnimValue;//Value to the on the postprocesig
 
-    private Volume volume;
-    private Vignette vignetteVolume;
+    private Volume volume;//Volume component 
+    private Vignette vignetteVolume;//Vignette effect 
+    #endregion
 
-    public GameObject dollyCartCam;
+    #region Camera Controll
+    public GameObject dollyCartCam;//Moves the cam 
 
-    public GameObject pivotCamera;
+    public GameObject pivotCamera;//Where the cam look
 
-    public GameObject dollyTrackCam;
+    public GameObject dollyTrackCam;//Cam way
 
-    private CinemachineSmoothPath smsp;
+    private CinemachineSmoothPath cinemachineSmoothPathCam;//Component
 
-    public Vector3 pivotPosition = new Vector3(0, 0, -15);
+    public Vector3 pivotPosition = new Vector3(0, 0, -15);//Position to plus to the pivot
 
-    public float cameraSpeed = 0.04f;
+    public float cameraSpeed = 0.04f;//Cameera rotation speed
+    #endregion
 
-    public GameObject pause;
+    //Pause
+    public GameObject pause;//Pause panel
 
+    //Music Manager
+    private AudioSource musicaManager;
+    public AudioClip gameMusic;
+    
 
     public static GameManager sharedInstance;
+    #endregion
+
+    #region Methots
+    //Start the game
     private void Awake()
     {
         Time.timeScale = 1;
-        if(sharedInstance == null)
+        //Spawn a game manager if there isn't one
+        if (sharedInstance == null)
         {
             sharedInstance = this;
         }
@@ -97,41 +123,58 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        smsp = dollyTrackCam.GetComponent<CinemachineSmoothPath>();
+        #region Get components
+        //Get all varaibles with their components
+        cinemachineSmoothPathCam = dollyTrackCam.GetComponent<CinemachineSmoothPath>();
 
         spawnPoints = GameObject.FindGameObjectsWithTag("spawnPoint");
 
-        coinsText.text = $"Coins : {coins}";
-
         volume = FindObjectOfType<Volume>();
+
+        musicaManager = GetComponent<AudioSource>();
+        #endregion
+
+        coinsText.text = $"Coins : {coins}";//Shows the money to the player
+
+        musicaManager.volume = DataPersistence.SharedInfo.musicGameDP;//Gets the music volume 
+        musicaManager.PlayOneShot(gameMusic);//Start music
 
     }
 
     private void Update()
     {
-        towerHealthText.text = $"Tower Life : {towerHealth}";
+            //Update the tower life to defend 
+            towerHealthText.text = $"Tower Life : {towerHealth}";
 
-            enemiesLeft = FindObjectsOfType<Enemy_manager>().Length;
-       if(enemyWave <= 5)
+        //Check all the enemies at the scene
+        enemiesLeft = FindObjectsOfType<Enemy_manager>().Length;
+
+        //Limits the game with 5 rounds
+        if (enemyWave <= 5)
         {
+            //Checks when there isn't anymore enemies to open the Platform button
             if (enemiesLeft <= 0)
             {
-            button.SetActive(true);
-            }
+                waitTime -= 1 * Time.deltaTime;
 
-            //win
+                if (waitTime <= 0 && enemiesLeft <= 0)
+                {
+                    button.SetActive(true);//Active the Platform button
+                }
+               
+            }
         }
-        
-       if(Input.GetKey(KeyCode.D))
+
+        if (Input.GetKey(KeyCode.D))
        {
-            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position += cameraSpeed;
-            smsp.m_Resolution = 5;
+            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position -= cameraSpeed;
+            cinemachineSmoothPathCam.m_Resolution = 5;
         }
 
         if(Input.GetKey(KeyCode.A))
        {
-            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position -= cameraSpeed;
-            smsp.m_Resolution = 6;
+            dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position += cameraSpeed;
+            cinemachineSmoothPathCam.m_Resolution = 6;
 
         }
 
@@ -151,12 +194,14 @@ public class GameManager : MonoBehaviour
         VignetteAnim(vignetteAnimValue);
 
         if(Input.GetKeyDown(KeyCode.Space))
-        {
             Pause();
-        }
-
+       
     }
+    #endregion
 
+    #region Functions
+    #region Spawn Tourret
+    //Functions to spawn the every torruet
     public void SpawnTower1()
     {
         Instantiate(tower[0], spawnTourretPos, Quaternion.identity);
@@ -169,52 +214,62 @@ public class GameManager : MonoBehaviour
     {
         Instantiate(tower[2], spawnTourretPos, Quaternion.identity);
     }
-    public void Exit()
-    {
-        uIOn = false;
-        towerSelector.SetActive(false);
-    }
+    #endregion
+
+    #region Spawn Platforms
+    //Function that spawn the new platform
     public void SpawnPlataform()
     {
-        int randoPlataform = Random.Range(0, platformCombination[oldPlataform].Length);
+        int randoPlataform = Random.Range(0, platformCombination[oldPlataform].Length);//Take a random platform taking into account the dictionary combinations
 
-        int newPlatform = platformCombination[oldPlataform][randoPlataform];
+        int newPlatform = platformCombination[oldPlataform][randoPlataform];//Saves the new paltform in a variable
 
-        Instantiate(mapSpawn[newPlatform], mapaPosition - Vector3.forward * 30, transform.rotation);
+        Instantiate(mapSpawn[newPlatform], mapaPosition - Vector3.forward * 30, transform.rotation);//Spawns the new platform in the new position
 
-        mapaPosition = mapaPosition - Vector3.forward * 30;
+        mapaPosition = mapaPosition - Vector3.forward * 30;//Each time calculates the new position
 
-        oldPlataform = newPlatform;
+        oldPlataform = newPlatform;//Save the new platform like the old to restart the cycle
     }
+    #endregion
+
+    #region Move button
     public void MoveButton()
     {
-        buttonPosition = buttonPosition - Vector3.forward * 30;
-        button.transform.position = buttonPosition;
-        pivotCamera.transform.position += pivotPosition;
-        smsp.m_Waypoints[2].position += new Vector3 (0,0,-25);
-        smsp.m_Waypoints[1].position += new Vector3 (0,0,-25); 
-        
+        buttonPosition = buttonPosition - Vector3.forward * 30;//Calcualtes the button spawn
+        button.transform.position = buttonPosition;//Updates the button spawn
+        pivotCamera.transform.position += pivotPosition;//Updates the pivot point
+        //Move the way point of the cam
+        cinemachineSmoothPathCam.m_Waypoints[2].position += new Vector3 (0,0,-25);
+        cinemachineSmoothPathCam.m_Waypoints[1].position += new Vector3 (0,0,-25); 
     }
+    #endregion
 
+    #region Enemies spawn
+    
+    //Spawn enemies by waves
     private IEnumerator SpawnEnemyWave(int totalenemies)
     {
         for (int i = 0; i < totalenemies; i++)
         {
-            SpawnEnemy();
-            yield return new WaitForSeconds(2);
+            SpawnEnemy();//Actives the enemy spawn 
+            yield return new WaitForSeconds(1);//Time between every spawn 
         }
     }
 
+    //Spawn enemy 
     public void SpawnEnemy()
     {
-        int randomEnemy = Random.Range(0, enemies.Length);
+        int randomEnemy = Random.Range(0, enemies.Length);//Random enemy
 
-        int radomSpawn = Random.Range(0, spawnPoints.Length);
+        int radomSpawn = Random.Range(0, spawnPoints.Length);//Random positon 
 
-        Instantiate(enemies[randomEnemy], spawnPoints[radomSpawn].transform.position, transform.rotation);
+        Instantiate(enemies[randomEnemy], spawnPoints[radomSpawn].transform.position, transform.rotation);//Spawn enemy
 
     }
+    #endregion
 
+    #region Buy System
+    //Update the coins when an enemy dies
     public void UpdateCoins(int coin)
     {
         coins += coin;
@@ -223,13 +278,17 @@ public class GameManager : MonoBehaviour
 
     }
 
+    //Buy a turret by subtracting the price
     public void BuyTurret(int price)
     {
-        coins -= price;
+        coins -= price;//Subtract the price of the tourret to the money
         coinsText.text = $"Coins : {coins}";
+        towerSelector.SetActive(false);
+        uIOn = false;
     }
 
-    void CanBuy(int button)
+    //Check if the money is enough to buy
+    void CanBuy(int button)//Turret button number and its assigned price 
     {
         if (coins < prices[button])
         {
@@ -240,15 +299,10 @@ public class GameManager : MonoBehaviour
             turretButton[button].interactable = true;
         }
     }
-    
-    public void GameOver(bool gameOver = false)
-    {
-        if(gameOver == true)
-        {
-            Time.timeScale = 0;
-        }
-    }
+    #endregion
 
+    #region Postprocesing
+    //increase the intensity moderately
     public void VignetteAnim(float value)
     {
         if (volume.profile.TryGet<Vignette>(out vignetteVolume))
@@ -256,13 +310,16 @@ public class GameManager : MonoBehaviour
             vignetteVolume.intensity.value = value;
         }
     }
+    #endregion 
 
+     //Change the scene
     public void GoToScene(string sceneName)
     {
         //Change to the scene with "Scene Name"
         SceneManager.LoadScene(sceneName);
     }
 
+    #region Pause
     public void Pause()
     {
         Time.timeScale = 0;
@@ -273,5 +330,27 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         pause.SetActive(false);
     }
+    #endregion 
 
+    //Stop the game
+    public void GameOver(bool gameOver = false)
+    {
+        if (gameOver == true)
+        {
+            lose.SetActive(true);
+            Time.timeScale = 0;
+        }
+    }
+    
+    //Exit the tourret menu
+    public void ExitUI()
+    {
+        uIOn = false;
+        towerSelector.SetActive(false);
+    }
+    public void Exit()
+    {
+        Application.Quit();
+    }
+    #endregion 
 }

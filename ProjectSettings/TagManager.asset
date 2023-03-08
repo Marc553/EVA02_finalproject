@@ -8,6 +8,7 @@ TagManager:
   - tourret
   - spawnPoint
   - Enemy
+  - Effects
   layers:
   - Default
   - TransparentFX
