@@ -8,85 +8,95 @@ using UnityEditor;
 
 public class OptionManager : MonoBehaviour
 {
-    #region VARAIBLES
-    //variables globales
+    #region Variables
+
+    #region Audio
     private AudioSource musicManager;
     public AudioClip menuMusic;
 
     private AudioSource effectsManager;
     public AudioClip effectsMusic;
-
-    //datapersitence
-    public Slider volumSliderMusic; //donde sacaremos el valor (float)
-    public Slider volumSliderEfects; //donde sacaremos el valor (float)
-
-    private float musicValue;//valor del slider (float)
-    private float effectsValue;//valor del slider (float)
     #endregion
 
+    #region Data persistence
+    public Slider volumSliderMusic; //Float value
+    public Slider volumSliderEfects; //Float value
+
+    private float musicValue;//Slider float value
+    private float effectsValue;//Slider float value
+    #endregion
+
+    #endregion
+
+    #region Methots
     private void Start()
     {
+        //Get the variable with component
         musicManager = GetComponent<AudioSource>();
         musicManager.PlayOneShot(menuMusic);
 
         effectsManager = GameObject.Find("Effects").GetComponent<AudioSource>();
 
+        //To download the data persitence data
         LoadUserOptions();
+
+        //To save it in the data persistence
         SaveUserOptions();
     }
+    #endregion 
 
-    #region FUNCIONES
+    #region Functions
 
-    public void SaveUserOptions() //cuando se ejecuta guarda en el data persitance las variables en su respectiva caja
+    public void SaveUserOptions() //Save the values in the data persistence
     {
         //persistencia de datos entre escenas
 
         DataPersistence.SharedInfo.musicGameDP = musicValue;
         DataPersistence.SharedInfo.effectsGameDP = effectsValue;
 
-        //persistencia de datos entre partidas
+        //Data persistence between scenes
         DataPersistence.SharedInfo.SaveForFutureGames();
     }
 
     public void LoadUserOptions()
     {
-        //si tiene esta clave, entonces tiene todas
+        //If there is kwy it works
 
-        musicValue = DataPersistence.SharedInfo.musicGameDP;//coge el último valor que ha tenido el slider
+        musicValue = DataPersistence.SharedInfo.musicGameDP;//Take the last value of the slider
 
-        effectsValue = DataPersistence.SharedInfo.effectsGameDP;//coge el último valor que ha tenido el slider
+        effectsValue = DataPersistence.SharedInfo.effectsGameDP;//Take the last value of the slider
 
         LoadVolume();
     }
 
     #region UpdateVolume
-    public void LoadVolume() //metemos el valor de numeroVolumen en el slider del menú de opciones, para cargar el volumen que se tenia configurado en otras partidas
+    public void LoadVolume() //Set the vaule of the data in the slider
     {
         volumSliderMusic.GetComponent<Slider>().value = musicValue;
         volumSliderEfects.GetComponent<Slider>().value = effectsValue;
     }
-    public void VolumeSelection(float V) //para que cuando cambiemos el valor del slider guardemos el valor para pasarlo al datapersistance
+
+    //parTo save the current changes of the slider in the data pesistence
+    public void VolumeSelection(float V) 
     {
         musicValue = V;
         musicManager.volume = musicValue;
     }
-    public void VolumeSelection2(float V) //para que cuando cambiemos el valor del slider guardemos el valor para pasarlo al datapersistance
+    public void VolumeSelection2(float V) 
     {
         effectsValue = V;
         effectsManager.volume = effectsValue;
     }
     #endregion
 
+    //Try the effect to listen if the volume is ok
     public void TryEffects()
     {
-        Debug.Log("si");
         effectsManager.PlayOneShot(effectsMusic);
     }
 
-    //para llegar a la menu scene
     public void GoToScene(string sceneName)
     {
-        // Cargamos la escena que tenga por nombre sceneName
         SceneManager.LoadScene(sceneName);
     }
 

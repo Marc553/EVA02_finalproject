@@ -110,12 +110,6 @@ public class torret : MonoBehaviour
             bullet.Seek(target);
         
     }
-    
-
-    void OnDrawGizmosSelected ()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range); 
-    }
+   
     #endregion 
 }

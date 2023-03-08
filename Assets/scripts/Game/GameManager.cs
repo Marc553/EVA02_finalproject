@@ -66,8 +66,6 @@ public class GameManager : MonoBehaviour
     public GameObject win;
     public GameObject lose;
 
-    public float waitTime = 20;
-
     #endregion
 
     #region Postprocesing
@@ -152,27 +150,29 @@ public class GameManager : MonoBehaviour
         //Limits the game with 5 rounds
         if (enemyWave <= 5)
         {
-            //Checks when there isn't anymore enemies to open the Platform button
-            if (enemiesLeft <= 0)
-            {
-                waitTime -= 1 * Time.deltaTime;
+                
+                //Checks when there isn't anymore enemies to open the Platform button
 
-                if (waitTime <= 0 && enemiesLeft <= 0)
+                if (enemiesLeft <= 0)
                 {
                     button.SetActive(true);//Active the Platform button
                 }
-               
-            }
+
+                if (enemiesLeft <= 0 && enemyWave == 5)
+                {
+                    win.SetActive(true);//Active the Platform button
+                }
+                
         }
 
-        if (Input.GetKey(KeyCode.D))
-       {
+            if (Input.GetKey(KeyCode.D))
+            {
             dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position -= cameraSpeed;
             cinemachineSmoothPathCam.m_Resolution = 5;
-        }
+            }
 
         if(Input.GetKey(KeyCode.A))
-       {
+        {
             dollyCartCam.GetComponent<CinemachineDollyCart>().m_Position += cameraSpeed;
             cinemachineSmoothPathCam.m_Resolution = 6;
 
@@ -195,8 +195,9 @@ public class GameManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
             Pause();
-       
-    }
+
+            
+        }
     #endregion
 
     #region Functions
